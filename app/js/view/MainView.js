@@ -63,6 +63,7 @@ export default class MainView {
     }
 
     clearObjects() {
+        this.removeTransformControl();
         this.scene.remove(this.container);
         this.dragComponent.clearObjects();
         this.container = new THREE.Object3D();
@@ -73,15 +74,28 @@ export default class MainView {
         this.uiSettings = {
             mesh: 'sphere',
             editLattice: false,
+            showTransformControls: true,
             vertexSize: 1,
+            divisions: 1,
             showLattice: true
         };
         const gui = new dat.GUI();
 
-        gui.add( this.uiSettings, "mesh", ['sphere', 'unicorn', 'hand'] ).onChange( () => this.controller.setModel(this.uiSettings.mesh));
+        gui.add( this.uiSettings, "mesh", ['sphere', 'dog', 'stayPuft'] ).onChange( () => this.controller.setModel(this.uiSettings.mesh));
         gui.add( this.uiSettings, "showLattice", true ).onChange( () => this.controller.onShowLatticeChange(this.uiSettings.showLattice));
+        gui.add( this.uiSettings, "showTransformControls", true ).onChange( () => {
+            if (this.uiSettings.showTransformControls) {
+                this.addTransformControl(this.controller.lattice.latticeMesh);
+            } else {
+                this.removeTransformControl();
+            }
+        });
         gui.add( this.uiSettings, "editLattice", true ).onChange( () => this.controller.onEditLatticeChange(this.uiSettings.editLattice));
         gui.add( this.uiSettings, "vertexSize", 1, 5 ).onChange( () => this.controller.setLatticeVertexSize(this.uiSettings.vertexSize));
+        gui.add( this.uiSettings, "divisions", [1, 2, 3] ).onChange( () => {
+            this.clearObjects();
+            this.controller.reloadModel()
+        });
     }
 
     onObjectClicked(object, shiftKey, ctrlKey) {
@@ -128,6 +142,9 @@ export default class MainView {
         });
 
         this.control.attach( mesh );
+
+        this.control.visible = this.uiSettings.showTransformControls;
+
         this.container.add( this.control );
     }
 

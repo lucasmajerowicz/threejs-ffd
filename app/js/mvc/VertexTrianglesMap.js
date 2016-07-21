@@ -1,20 +1,20 @@
 export default class VertexTrianglesMap {
-    constructor(lattice) {
-        this.vertices = this.getVertexTrianglesMap(lattice);
+    constructor(geometry) {
+        this.vertices = this.getVertexTrianglesMap(geometry);
     }
 
-    getVertexTrianglesMap(lattice) {
+    getVertexTrianglesMap(geometry) {
         const vertices = [];
 
-        for (let i = 0; i < lattice.numVertices; i++) {
+        for (let i = 0; i < geometry.numVertices; i++) {
             vertices.push([]);
         }
 
-        for (let i = 0; i < lattice.numFaces; i++) {
-            const face = lattice.getFace(i);
-            const vertexA = lattice.getVertex(face.a);
-            const vertexB = lattice.getVertex(face.b);
-            const vertexC = lattice.getVertex(face.c);
+        for (let i = 0; i < geometry.numFaces; i++) {
+            const face = geometry.getFace(i);
+            const vertexA = geometry.getVertex(face.a);
+            const vertexB = geometry.getVertex(face.b);
+            const vertexC = geometry.getVertex(face.c);
 
             vertices[face.a].push([vertexA, vertexB, vertexC]);
             vertices[face.b].push([vertexB, vertexC, vertexA]);

@@ -1,5 +1,5 @@
-import GeometryAdapterFactory from '../adapter/GeometryAdapterFactory';
-import Observable from '../Observable';
+import GeometryAdapterFactory from './adapter/GeometryAdapterFactory';
+import Observable from './Observable';
 
 const adapterFactory = new GeometryAdapterFactory();
 
@@ -30,7 +30,7 @@ export default class Lattice extends Observable {
 
         latticeBoxGeometry.translate(center.x, center.y, center.z);
 
-        this.latticeMesh = new THREE.Mesh(latticeBoxGeometry, new THREE.MeshStandardMaterial({ wireframe: true }));
+        this.latticeMesh = new THREE.Mesh(latticeBoxGeometry, new THREE.MeshBasicMaterial({color: 0x333333, wireframe: true, wireframeLinewidth: 1 }));
         this.latticeGeometry = adapterFactory.getAdapter(latticeBoxGeometry);
     }
 
@@ -80,13 +80,6 @@ export default class Lattice extends Observable {
         return result;
     }
 
-    areOnTheSamePlane(v1, v2) {
-        const delta = 1;
-        return (Math.abs(v1.x - v2.x) < delta && Math.abs(v1.y - v2.y) < delta)
-            || (Math.abs(v1.x - v2.x) < delta && Math.abs(v1.z - v2.z) < delta)
-            || (Math.abs(v1.z - v2.z) < delta && Math.abs(v1.y - v2.y) < delta);
-    }
-
     updateControlPointsPosition() {
         for (const controlPoint of this.controlPoints) {
             controlPoint.position.copy(this.getVertex(controlPoint.vertexIndex));
@@ -117,24 +110,6 @@ export default class Lattice extends Observable {
 
     getFace(i) {
         return this.latticeGeometry.getFace(i);
-    }
-
-    getAdjacentVertices(vertexIndex) {
-        const result = new Set();
-
-        for (let faceIndex = 0; faceIndex < this.numFaces; faceIndex++) {
-            const face = this.getFace(faceIndex);
-
-            if (face.a === vertexIndex || face.b === vertexIndex || face.c === vertexIndex) {
-                result.add(face.a);
-                result.add(face.b);
-                result.add(face.c);
-            }
-        }
-
-        result.delete(vertexIndex);
-
-        return result;
     }
 
     getControlPointMesh(vertexIndex) {

@@ -1,12 +1,13 @@
 import MainView from './view/MainView';
 import GeometryAdapterFactory from './adapter/GeometryAdapterFactory';
 import MeanValueCoordinates from './mvc/MeanValueCoordinates';
-import Lattice from './view/Lattice';
+import Lattice from './Lattice';
 import '../bin/STLLoader';
 
-const material = new THREE.MeshLambertMaterial( {
-    color: 0x666666
-});
+const material = new THREE.MeshPhongMaterial( { color: 0x3f2806 } );
+
+material.color.offsetHSL( 0.1, -0.1, 0 );
+
 const loader = new THREE.STLLoader();
 const adapterFactory = new GeometryAdapterFactory();
 
@@ -26,7 +27,9 @@ export default class Controller {
 
     onShowLatticeChange(showLattice) {
         this.lattice.isVisible = showLattice;
-        this.view.control.visible = showLattice;
+        if (this.view.control) {
+            this.view.control.visible = showLattice;
+        }
     }
 
     setLatticeVertexSize(size) {
@@ -81,7 +84,7 @@ export default class Controller {
             this.view.addObject( mesh );
 
             this.geometryAdapter = adapterFactory.getAdapter(geometry);
-            this.lattice = new Lattice(this.geometryAdapter, 2);
+            this.lattice = new Lattice(this.geometryAdapter, this.view.uiSettings.divisions);
 
             this.view.addObject(this.lattice.latticeMesh);
 
@@ -99,7 +102,7 @@ export default class Controller {
             if (index == 'sphere') {
                 resolve(new THREE.SphereBufferGeometry(3, 32, 32));
             } else {
-                const fileName = (index == 'unicorn') ? 'dog.stl' : 'StayPuft.stl';
+                const fileName = (index == 'dog') ? 'dog.stl' : 'StayPuft.stl';
                 loader.load('models/' + fileName, function (geometry) {
                     resolve(geometry);
                 });
@@ -124,7 +127,9 @@ export default class Controller {
         this.lattice.addObserver('onDrag', (e) => this.onLatticeDrag(e));
 
         this.view.removeTransformControl();
-        this.view.addTransformControl(this.lattice.latticeMesh);
+        if (this.view.uiSettings.showTransformControls) {
+            this.view.addTransformControl(this.lattice.latticeMesh);
+        }
     }
 
     onLatticeDrag(e) {

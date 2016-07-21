@@ -2,9 +2,9 @@ import VertexTrianglesMap from './VertexTrianglesMap';
 import CoordinateCalculator from './CoordinateCalculator';
 
 export default class MeanValueCoordinates {
-    constructor(lattice) {
-        this.lattice = lattice;
-        this.trianglesByVertex = new VertexTrianglesMap(this.lattice);
+    constructor(geometry) {
+        this.geometry = geometry;
+        this.trianglesByVertex = new VertexTrianglesMap(this.geometry);
         this.coordinateCalculator = new CoordinateCalculator();
     }
 
@@ -13,7 +13,7 @@ export default class MeanValueCoordinates {
         let sum = 0;
 
         for (let vertexIndex = 0; vertexIndex < this.trianglesByVertex.length; vertexIndex++) {
-            const boundaryVertex = this.lattice.getVertex(vertexIndex);
+            const boundaryVertex = this.geometry.getVertex(vertexIndex);
             const triangles = this.trianglesByVertex.getTriangles(vertexIndex);
             const coordinate = this.coordinateCalculator.getCoordinate(vertex, boundaryVertex, triangles);
 
@@ -36,7 +36,7 @@ export default class MeanValueCoordinates {
             const coefficient = coordinates[vertexIndex];
 
             if (coefficient > 0) {
-                const boundaryVertex = this.lattice.getVertex(vertexIndex);
+                const boundaryVertex = this.geometry.getVertex(vertexIndex);
 
                 result.add(boundaryVertex.clone().multiplyScalar(coefficient));
                 total += coefficient;

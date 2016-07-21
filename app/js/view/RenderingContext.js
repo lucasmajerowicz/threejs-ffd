@@ -16,7 +16,7 @@ export default class RenderingContext {
         camera.position.z = 30;
         renderer.setSize(width, height);
         renderer.setClearColor(0xf0f0f0, 1);
-        scene.add(new THREE.AmbientLight(0x888888));
+        scene.add(new THREE.AmbientLight(0xffffff));
 
         const light = new THREE.DirectionalLight(0xffffff, 1);
 
