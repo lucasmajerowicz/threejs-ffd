@@ -1,4 +1,4 @@
-# THREE.JS Geometry Adapter Example
+# Mesh Manipulation Using Mean Values Coordinates in Three.js
 ========
 
 ## Installation
